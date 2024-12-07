@@ -1,0 +1,61 @@
+networks:
+  laravel_network:
+    driver: bridge
+
+services:
+  # laravel:
+  #   networks:
+  #     - laravel_network
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: aplikasi_galon
+  #   ports:
+  #     - "6969:80" # Laravel accessible at http://localhost:6969
+  #   # environment:
+  #   #   - APP_ENV=production
+  #   #   - APP_DEBUG=true
+  #   #   - DB_CONNECTION=mysql
+  #   #   - DB_HOST=host.docker.internal
+  #   #   - DB_PORT=3306
+  #   #   - DB_DATABASE=aplikasi_galon_db
+  #   #   - DB_USERNAME=root
+  #   #   - DB_PASSWORD='Rahasia1234'
+  #   volumes:
+  #     - .:/var/www/html
+  #   depends_on:
+  #     - mysql
+  #   command: >
+  #     sh -c "
+  #       until nc -z mysql 3306; do
+  #         echo 'Waiting for MySQL...';
+  #         sleep 1;
+  #       done;
+  #       if [ ! -f .env ]; then
+  #         cp .env.example .env && php artisan key:generate;
+  #       fi;
+  #       php artisan migrate:refresh --force --seed && 
+  #       php artisan optimize:clear &&
+  #       php artisan optimize &&
+  #       apache2-foreground
+  #     "
+  mysql:
+    networks:
+      - laravel_network
+    image: mysql:8.0
+    container_name: aplikasi_pegawai
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: aplikasi_pegawai
+      MYSQL_ROOT_PASSWORD: 'Rahasia1234'
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: tmpfs
+        target: /var/lib/mysql
+
+volumes:
+  mysql_data:
+
+
